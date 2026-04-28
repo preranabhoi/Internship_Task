@@ -1,0 +1,45 @@
+{
+    "appName": "Dynamic CRM Builder",
+    "auth": true,
+    "languages": ["en", "hi"],
+    "tables": [
+      {
+        "name": "customers",
+        "label": "Customers",
+        "fields": [
+          {
+            "name": "name",
+            "label": "Full Name",
+            "type": "text",
+            "required": true
+          },
+          {
+            "name": "email",
+            "label": "Email",
+            "type": "email"
+          },
+          {
+            "name": "city",
+            "label": "City",
+            "type": "text"
+          },
+          {
+            "name": "age",
+            "label": "Age",
+            "type": "number"
+          }
+        ]
+      }
+    ],
+    "ui": [
+      {
+        "type": "form",
+        "table": "customers"
+      },
+      {
+        "type": "table",
+        "table": "customers"
+      }
+    ]
+  }
+  
