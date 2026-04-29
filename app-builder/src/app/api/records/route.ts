@@ -1,8 +1,19 @@
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 export async function POST(req: Request) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json();
 
     const record = await prisma.record.create({
@@ -11,6 +22,8 @@ export async function POST(req: Request) {
         data: body.data,
       },
     });
+
+    console.log("Mock email sent");
 
     return NextResponse.json(record);
   } catch (error) {
@@ -25,12 +38,17 @@ export async function POST(req: Request) {
 
 export async function GET() {
   try {
-    const records =
-      await prisma.record.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json([]);
+    }
+
+    const records = await prisma.record.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
     return NextResponse.json(records);
   } catch (error) {

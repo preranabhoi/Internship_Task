@@ -1,13 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function DynamicForm({
-    table,
-    language,
-  }: any)
-   {
-  const [formData, setFormData] = useState<any>({});
+  table,
+  language,
+  selectedRecord,
+}: any) {
+  const getInitialState = () =>
+    table.fields.reduce(
+      (acc: any, field: any) => {
+        acc[field.name] = "";
+        return acc;
+      },
+      {}
+    );
+
+  const [formData, setFormData] =
+    useState<any>(getInitialState());
+
+  useEffect(() => {
+    if (selectedRecord) {
+      setFormData(selectedRecord);
+    }
+  }, [selectedRecord]);
 
   function handleChange(
     fieldName: string,
@@ -21,7 +38,7 @@ export default function DynamicForm({
 
   async function handleSubmit(e: any) {
     e.preventDefault();
-  
+
     const res = await fetch("/api/records", {
       method: "POST",
       headers: {
@@ -33,15 +50,17 @@ export default function DynamicForm({
         data: formData,
       }),
     });
-  
+
     if (res.ok) {
-      alert("Saved successfully");
-      setFormData({});
+      toast.success(
+        "Record saved successfully"
+      );
+
+      setFormData(getInitialState());
     } else {
-      alert("Save failed");
+      toast.error("Save failed");
     }
   }
-  
 
   return (
     <div className="border rounded-lg p-6 bg-white shadow">
@@ -62,8 +81,13 @@ export default function DynamicForm({
             <input
               type={field.type}
               required={field.required}
+              value={
+                formData[field.name] || ""
+              }
               className="w-full border p-2 rounded"
-              placeholder={field.label[language]}
+              placeholder={
+                field.label[language]
+              }
               onChange={(e) =>
                 handleChange(
                   field.name,

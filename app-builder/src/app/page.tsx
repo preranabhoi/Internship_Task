@@ -3,11 +3,19 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import CSVImporter from "@/components/CSVImporter";
 import { config } from "@/lib/helpers";
-import { componentRegistry } from "@/lib/registry";
+import DynamicForm from "@/components/DynamicForm";
+import DynamicTable from "@/components/DynamicTable";
 
 export default function Home() {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] =
+    useState(config.defaultLanguage);
+
+  const [selectedRecord, setSelectedRecord] =
+    useState<any>(null);
+
+  const table = config.tables[0];
 
   return (
     <main className="min-h-screen bg-gray-50 p-10">
@@ -20,30 +28,23 @@ export default function Home() {
         />
       </div>
 
+      <CSVImporter tableName="customers" />
+
       <h1 className="text-4xl font-bold mb-10">
-        {String(config.appName[language])}
+        {config.appName[language]}
       </h1>
 
-      {config.ui.map((component, index) => {
-        const Component =
-          componentRegistry[
-            component.type as keyof typeof componentRegistry
-          ];
+      <DynamicForm
+        table={table}
+        language={language}
+        selectedRecord={selectedRecord}
+      />
 
-        const table = config.tables.find(
-          (t) => t.name === component.table
-        );
-
-        if (!Component || !table) return null;
-
-        return (
-          <Component
-            key={index}
-            table={table}
-            language={language}
-          />
-        );
-      })}
+      <DynamicTable
+        table={table}
+        language={language}
+        setSelectedRecord={setSelectedRecord}
+      />
     </main>
   );
 }
