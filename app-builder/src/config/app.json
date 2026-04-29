@@ -1,31 +1,50 @@
 {
-    "appName": "Dynamic CRM Builder",
+    "appName": {
+      "en": "Dynamic CRM Builder",
+      "hi": "डायनामिक CRM बिल्डर"
+    },
     "auth": true,
     "languages": ["en", "hi"],
+    "defaultLanguage": "en",
     "tables": [
       {
         "name": "customers",
-        "label": "Customers",
+        "label": {
+          "en": "Customers",
+          "hi": "ग्राहक"
+        },
         "fields": [
           {
             "name": "name",
-            "label": "Full Name",
+            "label": {
+              "en": "Full Name",
+              "hi": "पूरा नाम"
+            },
             "type": "text",
             "required": true
           },
           {
             "name": "email",
-            "label": "Email",
+            "label": {
+              "en": "Email",
+              "hi": "ईमेल"
+            },
             "type": "email"
           },
           {
             "name": "city",
-            "label": "City",
+            "label": {
+              "en": "City",
+              "hi": "शहर"
+            },
             "type": "text"
           },
           {
             "name": "age",
-            "label": "Age",
+            "label": {
+              "en": "Age",
+              "hi": "उम्र"
+            },
             "type": "number"
           }
         ]

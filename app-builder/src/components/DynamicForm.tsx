@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 export default function DynamicForm({
-  table,
-}: {
-  table: any;
-}) {
+    table,
+    language,
+  }: any)
+   {
   const [formData, setFormData] = useState<any>({});
 
   function handleChange(
@@ -19,19 +19,34 @@ export default function DynamicForm({
     }));
   }
 
-  function handleSubmit(e: any) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
-
-    alert(
-      "Form Submitted:\n\n" +
-        JSON.stringify(formData, null, 2)
-    );
+  
+    const res = await fetch("/api/records", {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        tableName: table.name,
+        data: formData,
+      }),
+    });
+  
+    if (res.ok) {
+      alert("Saved successfully");
+      setFormData({});
+    } else {
+      alert("Save failed");
+    }
   }
+  
 
   return (
     <div className="border rounded-lg p-6 bg-white shadow">
       <h2 className="text-2xl font-bold mb-4">
-        {table.label} Form
+        {table.label[language]} Form
       </h2>
 
       <form
@@ -41,14 +56,14 @@ export default function DynamicForm({
         {table.fields.map((field: any) => (
           <div key={field.name}>
             <label className="block mb-1 font-medium">
-              {field.label}
+              {field.label[language]}
             </label>
 
             <input
               type={field.type}
               required={field.required}
               className="w-full border p-2 rounded"
-              placeholder={field.label}
+              placeholder={field.label[language]}
               onChange={(e) =>
                 handleChange(
                   field.name,
